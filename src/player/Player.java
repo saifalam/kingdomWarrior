@@ -1,9 +1,14 @@
 package player;
 
+/**
+ * Used to provide a very simple player
+ */
 public class Player {
 	
 	private String name;
 	private int points;
+	
+	//More fields can be added according to the demand
 	
 	
 	public Player(String name, int points) {

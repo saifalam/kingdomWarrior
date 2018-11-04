@@ -1,5 +1,8 @@
 package utility;
 
+/**
+ * Provide board size depending on game level
+ */
 public enum BoardSize {
 	ONE(4),
 	TOW(5),
