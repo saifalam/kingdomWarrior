@@ -17,6 +17,8 @@ public class Game {
 	public static final String ANSI_GREEN = "\u001B[32m";
 	public static final String ANSI_YELLOW = "\u001B[33m";
 	public static final String ANSI_BLUE = "\u001B[34m";
+	
+	public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
 	// A player considered as a warrior
 	private Player warrior;
@@ -67,6 +69,7 @@ public class Game {
 		int y = 1;
 		String move;
 
+		System.out.println("Enter a valid move (H,J,K,L)");
 		while (!(move = input.nextLine()).equalsIgnoreCase("quit")) {
 			
 			if (move.equalsIgnoreCase("h")) {
@@ -128,6 +131,7 @@ public class Game {
 			} 
 			else
 				System.out.println("Invalid move: "+ move);
+				System.out.println("Enter a valid move (H,J,K,L)");
 		}
 		
 		System.out.println("Mission is given up by the warrior "+ move);
