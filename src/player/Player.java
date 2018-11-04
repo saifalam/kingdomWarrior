@@ -3,7 +3,7 @@ package player;
 /**
  * Used to provide a very simple player
  */
-public class Player {
+public class Player implements IPlayer{
 	
 	private String name;
 	private int points;
@@ -16,15 +16,18 @@ public class Player {
 		this.name = name;
 		this.points = points;
 	}
+	
+	@Override
 	public String getName() {
 		return name;
 	}
 	
-	
+	@Override
 	public int getPoints() {
 		return points;
 	}
 	
+	@Override
 	public void setPoints(int points) {
 		this.points = points;
 	}

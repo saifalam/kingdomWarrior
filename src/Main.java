@@ -1,4 +1,5 @@
 import game.Game;
+import game.GameInitializer;
 
 public class Main {
 	// Used to run the game
@@ -20,12 +21,12 @@ public class Main {
 		System.out.println("    => East(right) = L ");
 		System.out.println("    => South(down) = K ");
 		System.out.println("    => North (up) = J ");
-		System.out.println("    (If you are a vim user then you know waht I mean ;) .... )");
+		System.out.println("    (If you are a vim user then you know what I mean ;) .... )");
 		
 		
 		System.out.println("--------------------------------------");
 		System.out.println("--------------------------------------" + Game.ANSI_RESET);
-		Game game = new Game();
+		GameInitializer game = new GameInitializer();
 		game.initGame();
 		//game.play();
 	}

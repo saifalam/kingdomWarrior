@@ -9,7 +9,7 @@ import java.util.Random;
  * This class is used for creating a dynamic board.
  * this board need only a dimension as input.  
  */
-public class Board {
+public class Board implements IBoard {
 	
 	// dimension of board
 	private int dimensionX, dimensionY;
@@ -44,8 +44,7 @@ public class Board {
 	}
 	
 	
-	
-
+	@Override
 	public int getGridDimensionX() {
 		return gridDimensionX;
 	}
@@ -54,6 +53,7 @@ public class Board {
 		this.gridDimensionX = gridDimensionX;
 	}
 
+	@Override
 	public int getGridDimensionY() {
 		return gridDimensionY;
 	}
@@ -62,6 +62,7 @@ public class Board {
 		this.gridDimensionY = gridDimensionY;
 	}
 
+	@Override
 	public char[][] getGrid() {
 		return grid;
 	}
@@ -233,6 +234,7 @@ public class Board {
 		}
 	}
 
+	@Override
 	public void solve() {
 		// default solve top left to bottom right
 		this.solve(0, 0, dimensionX - 1, dimensionY - 1);
@@ -381,6 +383,7 @@ public class Board {
 	}
 
 	/** simply prints the board */
+	@Override
 	public void draw() {
 		System.out.print(this);
 	}

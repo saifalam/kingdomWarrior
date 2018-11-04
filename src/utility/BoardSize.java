@@ -4,13 +4,13 @@ package utility;
  * Provide board size depending on game level
  */
 public enum BoardSize {
-	ONE(4),
-	TOW(5),
-	THREE(6),
-	FOUR(7),
-	FIVE(8),
-	SIX(9),
-	SEVEN(10);
+	ONE(5),
+	TOW(6),
+	THREE(7),
+	FOUR(8),
+	FIVE(9),
+	SIX(10),
+	SEVEN(11);
 	
 	private int size;
 

@@ -2,14 +2,11 @@ package game;
 
 import java.util.Scanner;
 
-import board.Board;
-import player.Player;
+import board.IBoard;
+import player.IPlayer;
 import utility.BoardSize;
 
-/**
- * This class is used to control the whole game
- */
-public class Game {
+public class GameInitializer {
 
 	// Used to print different colors of letters on command line
 	public static final String ANSI_RESET = "\u001B[0m";
@@ -17,15 +14,10 @@ public class Game {
 	public static final String ANSI_GREEN = "\u001B[32m";
 	public static final String ANSI_YELLOW = "\u001B[33m";
 	public static final String ANSI_BLUE = "\u001B[34m";
-	
-	public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
-	// A player considered as a warrior
-	private Player warrior;
-	
-	// A game board is considered as kingdom
-	private Board kingdom;
-	
+	private IBoard kingdom;
+	private IPlayer warrior;
+
 	private Scanner input = new Scanner(System.in);
 	private Scanner decesion = new Scanner(System.in);
 	private int level = 0;
@@ -36,8 +28,7 @@ public class Game {
 	 */
 	public void initGame() {
 		if(warrior == null) {
-			System.out.print("Please enter the name of the warrior: ");
-			warrior = new Player(input.nextLine(), 0);
+			initPlayer();
 		}
 		
 		level++;
@@ -54,14 +45,26 @@ public class Game {
 			kingdom = null; 
 			isWin = false;
 		}
-		kingdom = new Board(BoardSize.getSizeByLevel(level));
+		
+		initBoard();
+	}
+	
+	public void initPlayer() {
+		AbstractGameFactory playerFactory = GameObjectInitializer.getFactoryObject("player");
+		System.out.print("Please enter the name of the warrior: ");
+		warrior = playerFactory.getPlayer(input.nextLine(), 0);
 	}
 
+	public void initBoard() {
+		AbstractGameFactory boardFactory = GameObjectInitializer.getFactoryObject("board");
+		kingdom = boardFactory.getBoard(BoardSize.getSizeByLevel(level));
+	}
+	
 	/** used to start the game */
 	public void play() {
 		System.out.println(warrior.getName() + ", you have " + warrior.getPoints() + " points");
 		System.out.println("Start kingdom: " + level);
-		kingdom.solve();
+		//kingdom.solve();
 		kingdom.draw();
 		char[][] grid = kingdom.getGrid();
 		
