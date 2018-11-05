@@ -72,7 +72,7 @@ public class GameInitializer {
 		int y = 1;
 		String move;
 
-		System.out.println("Enter a valid move (H,J,K,L)");
+		System.out.println("Enter a valid move (H(left),J(down),K(up),L(right))");
 		while (!(move = input.nextLine()).equalsIgnoreCase("quit")) {
 			
 			if (move.equalsIgnoreCase("h")) {
@@ -132,9 +132,11 @@ public class GameInitializer {
 
 				updateSingleMove(x, y, grid);
 			} 
-			else
+			else {
 				System.out.println("Invalid move: "+ move);
-				System.out.println("Enter a valid move (H,J,K,L)");
+				System.out.println("Enter a valid move (H(left),J(down),K(up),L(right))");
+			}
+			
 		}
 		
 		System.out.println("Mission is given up by the warrior "+ move);
