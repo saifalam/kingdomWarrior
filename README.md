@@ -10,7 +10,7 @@ Hope so..... :) . So let's read how to run and play this game and then start tak
 
 ## **How to RUN:**
 
-P.B.: __Java needs to be installed and configured for this version__  
+P.B.: __Java needs to be installed or configured to the local machine__  
 
 Clone this repository or download the .zip version. Extarct it into your local machine.
 
