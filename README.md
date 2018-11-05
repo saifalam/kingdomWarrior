@@ -10,8 +10,15 @@ Hope so..... :) . So let's read how to run and play this game and then start tak
 
 ## **How to RUN:**
 
-__Java needs to be installed and configured for this version__  
-Clone this repository or download the .zip version. Extarct it into your local machine. GO to ...your_directory/kingdomWarrior/bin. Oprn the command line and write the command `java Main`  
+P.B.: __Java needs to be installed and configured for this version__  
+
+Clone this repository or download the .zip version. Extarct it into your local machine.
+
+**option one:**  
+Go to ...your_directory/kingdomWarrior/. Open the command line and write the command: `java -jar kingdomWarrior.jar`  
+
+**option two:**  
+Go to ...your_directory/kingdomWarrior/bin. Open the command line and write the command: `java Main`  
 
 
 
