@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Board.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">kingdomWarrior (Nov 7, 2018 12:16:43 AM)</a> &gt; <a href="../../index.html" class="el_group">kingdomWarrior</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">board</a> &gt; <span class="el_source">Board.java</span></div><h1>Board.java</h1><pre class="source lang-java linenums">package board;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
+
+/** 
+ * This class is used for creating a dynamic board.
+ * this board need only a dimension as input.  
+ * 
+ */
+public class Board implements IBoard {
+	
+	// dimension of board
+	private int dimensionX, dimensionY;
+	
+	// dimension of output grid
+	private int gridDimensionX, gridDimensionY; 
+	
+	// output grid
+	private char[][] grid; 
+	
+	// 2d array of Cells
+	private Cell[][] cells;
+	
+	// The random object
+<span class="fc" id="L28">	private Random random = new Random(); </span>
+	
+	// initialize with x and y the same
+	public Board(int aDimension) {
+		// Initialize
+<span class="fc" id="L33">		this(aDimension, aDimension);</span>
+<span class="fc" id="L34">	}</span>
+
+	// constructor
+<span class="fc" id="L37">	public Board(int xDimension, int yDimension) {</span>
+<span class="fc" id="L38">		dimensionX = xDimension;</span>
+<span class="fc" id="L39">		dimensionY = yDimension;</span>
+<span class="fc" id="L40">		gridDimensionX = xDimension * 4 + 1;</span>
+<span class="fc" id="L41">		gridDimensionY = yDimension * 2 + 1;</span>
+<span class="fc" id="L42">		grid = new char[gridDimensionX][gridDimensionY];</span>
+<span class="fc" id="L43">		init();</span>
+<span class="fc" id="L44">		generateBoard();</span>
+<span class="fc" id="L45">	}</span>
+	
+	
+	@Override
+	public int getGridDimensionX() {
+<span class="fc" id="L50">		return gridDimensionX;</span>
+	}
+
+	public void setGridDimensionX(int gridDimensionX) {
+<span class="nc" id="L54">		this.gridDimensionX = gridDimensionX;</span>
+<span class="nc" id="L55">	}</span>
+
+	@Override
+	public int getGridDimensionY() {
+<span class="fc" id="L59">		return gridDimensionY;</span>
+	}
+
+	public void setGridDimensionY(int gridDimensionY) {
+<span class="nc" id="L63">		this.gridDimensionY = gridDimensionY;</span>
+<span class="nc" id="L64">	}</span>
+
+	@Override
+	public char[][] getGrid() {
+<span class="fc" id="L68">		return grid;</span>
+	}
+
+	public void setGrid(char[][] grid) {
+<span class="nc" id="L72">		this.grid = grid;</span>
+<span class="nc" id="L73">	}</span>
+
+	private void init() {
+		// create cells
+<span class="fc" id="L77">		cells = new Cell[dimensionX][dimensionY];</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		for (int x = 0; x &lt; dimensionX; x++) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">			for (int y = 0; y &lt; dimensionY; y++) {</span>
+<span class="fc" id="L80">				cells[x][y] = new Cell(x, y, false); // create cell (see Cell constructor)</span>
+			}
+		}
+<span class="fc" id="L83">	}</span>
+
+	/** inner class to represent a cell */
+	private class Cell {
+		
+		// coordinates
+		int x, y;
+
+		// cells this cell is connected to
+<span class="fc" id="L92">		ArrayList&lt;Cell&gt; neighbors = new ArrayList&lt;Board.Cell&gt;();</span>
+
+		// solver: if already used
+<span class="fc" id="L95">		boolean visited = false;</span>
+
+		// solver: the Cell before this one in the path
+<span class="fc" id="L98">		Cell parent = null;</span>
+
+		// solver: if used in last attempt to solve path
+<span class="fc" id="L101">		boolean inPath = false;</span>
+
+		// solver: distance travelled this far
+		double travelled;
+
+		// solver: projected distance to end
+		double projectedDist;
+
+		// non-passable cell
+<span class="fc" id="L110">		boolean wall = true;</span>
+
+		// if true, has yet to be used in generation
+<span class="fc" id="L113">		boolean open = true;</span>
+
+		// construct Cell at x, y
+		Cell(int x, int y) {
+<span class="fc" id="L117">			this(x, y, true);</span>
+<span class="fc" id="L118">		}</span>
+
+		// construct Cell at x, y and with whether it isWall
+<span class="fc" id="L121">		Cell(int x, int y, boolean isWall) {</span>
+<span class="fc" id="L122">			this.x = x;</span>
+<span class="fc" id="L123">			this.y = y;</span>
+<span class="fc" id="L124">			this.wall = isWall;</span>
+<span class="fc" id="L125">		}</span>
+
+		// add a neighbor to this cell, and this cell as a neighbor to the other
+		void addNeighbor(Cell other) {
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">			if (!this.neighbors.contains(other)) { // avoid duplicates</span>
+<span class="fc" id="L130">				this.neighbors.add(other);</span>
+			}
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">			if (!other.neighbors.contains(this)) { // avoid duplicates</span>
+<span class="fc" id="L133">				other.neighbors.add(this);</span>
+			}
+<span class="fc" id="L135">		}</span>
+
+		// used in updateGrid()
+		boolean isCellBelowNeighbor() {
+<span class="fc" id="L139">			return this.neighbors.contains(new Cell(this.x, this.y + 1));</span>
+		}
+
+		// used in updateGrid()
+		boolean isCellRightNeighbor() {
+<span class="fc" id="L144">			return this.neighbors.contains(new Cell(this.x + 1, this.y));</span>
+		}
+
+		// useful Cell representation
+		@Override
+		public String toString() {
+<span class="nc" id="L150">			return String.format(&quot;Cell(%s, %s)&quot;, x, y);</span>
+		}
+
+		// useful Cell equivalence
+		@Override
+		public boolean equals(Object other) {
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">			if (!(other instanceof Cell))</span>
+<span class="nc" id="L157">				return false;</span>
+<span class="fc" id="L158">			Cell otherCell = (Cell) other;</span>
+<span class="fc bfc" id="L159" title="All 4 branches covered.">			return (this.x == otherCell.x &amp;&amp; this.y == otherCell.y);</span>
+		}
+
+		// should be overridden with equals
+		@Override
+		public int hashCode() {
+			// random hash code method designed to be usually unique
+<span class="nc" id="L166">			return this.x + this.y * 256;</span>
+		}
+	}
+
+	// generate from upper left (In computing the y increases down often)
+	private void generateBoard() {
+<span class="fc" id="L172">		generateBoard(0, 0);</span>
+<span class="fc" id="L173">	}</span>
+
+	// generate the board from coordinates x, y
+	private void generateBoard(int x, int y) {
+		// generate from Cell
+<span class="fc" id="L178">		generateBoard(getCell(x, y));</span>
+<span class="fc" id="L179">	}</span>
+
+	private void generateBoard(Cell startAt) {
+
+		// don't generate from cell not there
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">		if (startAt == null)</span>
+<span class="nc" id="L185">			return;</span>
+<span class="fc" id="L186">		startAt.open = false; // indicate cell closed for generation</span>
+<span class="fc" id="L187">		ArrayList&lt;Cell&gt; cells = new ArrayList&lt;Board.Cell&gt;();</span>
+<span class="fc" id="L188">		cells.add(startAt);</span>
+
+<span class="fc bfc" id="L190" title="All 2 branches covered.">		while (!cells.isEmpty()) {</span>
+			Cell cell;
+			// this is to reduce but not completely eliminate the number
+			// of long twisting halls with short easy to detect branches
+			// which results in easy boards
+<span class="fc bfc" id="L195" title="All 2 branches covered.">			if (random.nextInt(10) == 0)</span>
+<span class="fc" id="L196">				cell = cells.remove(random.nextInt(cells.size()));</span>
+			else
+<span class="fc" id="L198">				cell = cells.remove(cells.size() - 1);</span>
+
+			// for collection
+<span class="fc" id="L201">			ArrayList&lt;Cell&gt; neighbors = new ArrayList&lt;Board.Cell&gt;();</span>
+
+			// cells that could potentially be neighbors
+<span class="fc" id="L204">			Cell[] potentialNeighbors = new Cell[] { getCell(cell.x + 1, cell.y), getCell(cell.x, cell.y + 1),</span>
+<span class="fc" id="L205">					getCell(cell.x - 1, cell.y), getCell(cell.x, cell.y - 1) };</span>
+
+<span class="fc bfc" id="L207" title="All 2 branches covered.">			for (Cell other : potentialNeighbors) {</span>
+				// skip if outside, is a wall or is not opened
+<span class="pc bpc" id="L209" title="1 of 6 branches missed.">				if (other == null || other.wall || !other.open)</span>
+<span class="fc" id="L210">					continue;</span>
+<span class="fc" id="L211">				neighbors.add(other);</span>
+			}
+
+<span class="fc bfc" id="L214" title="All 2 branches covered.">			if (neighbors.isEmpty())</span>
+<span class="fc" id="L215">				continue;</span>
+
+			// get random cell
+<span class="fc" id="L218">			Cell selected = neighbors.get(random.nextInt(neighbors.size()));</span>
+
+			// add as neighbor
+<span class="fc" id="L221">			selected.open = false; // indicate cell closed for generation</span>
+
+<span class="fc" id="L223">			cell.addNeighbor(selected);</span>
+<span class="fc" id="L224">			cells.add(cell);</span>
+<span class="fc" id="L225">			cells.add(selected);</span>
+		}
+<span class="fc" id="L227">	}</span>
+
+	// used to get a Cell at x, y; returns null out of bounds
+	public Cell getCell(int x, int y) {
+		try {
+<span class="fc" id="L232">			return cells[x][y];</span>
+<span class="fc" id="L233">		} catch (ArrayIndexOutOfBoundsException e) { // catch out of bounds</span>
+<span class="fc" id="L234">			return null;</span>
+		}
+	}
+
+	@Override
+	public void solve() {
+		// default solve top left to bottom right
+<span class="fc" id="L241">		this.solve(0, 0, dimensionX - 1, dimensionY - 1);</span>
+<span class="fc" id="L242">	}</span>
+
+	/** solve the board starting from the start state (A-star algorithm)*/
+	public void solve(int startX, int startY, int endX, int endY) {
+
+		// re initialize cells for path finding
+<span class="fc bfc" id="L248" title="All 2 branches covered.">		for (Cell[] cellrow : this.cells) {</span>
+<span class="fc bfc" id="L249" title="All 2 branches covered.">			for (Cell cell : cellrow) {</span>
+<span class="fc" id="L250">				cell.parent = null;</span>
+<span class="fc" id="L251">				cell.visited = false;</span>
+<span class="fc" id="L252">				cell.inPath = false;</span>
+<span class="fc" id="L253">				cell.travelled = 0;</span>
+<span class="fc" id="L254">				cell.projectedDist = -1;</span>
+			}
+		}
+
+		// cells still being considered
+<span class="fc" id="L259">		ArrayList&lt;Cell&gt; openCells = new ArrayList&lt;Board.Cell&gt;();</span>
+
+		// cell being considered
+<span class="fc" id="L262">		Cell endCell = getCell(endX, endY);</span>
+
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">		if (endCell == null)</span>
+<span class="nc" id="L265">			return; // quit if end out of bounds</span>
+		{ // anonymous block to delete start, because not used later
+<span class="fc" id="L267">			Cell start = getCell(startX, startY);</span>
+<span class="pc bpc" id="L268" title="1 of 2 branches missed.">			if (start == null)</span>
+<span class="nc" id="L269">				return; // quit if start out of bounds</span>
+<span class="fc" id="L270">			start.projectedDist = getProjectedDistance(start, 0, endCell);</span>
+<span class="fc" id="L271">			start.visited = true;</span>
+<span class="fc" id="L272">			openCells.add(start);</span>
+		}
+
+<span class="fc" id="L275">		boolean solving = true;</span>
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">		while (solving) {</span>
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">			if (openCells.isEmpty())</span>
+<span class="nc" id="L278">				return; // quit, no path</span>
+
+			// sort openCells according to least projected distance
+<span class="fc" id="L281">			Collections.sort(openCells, new Comparator&lt;Cell&gt;() {</span>
+				public int compare(Cell cell1, Cell cell2) {
+<span class="fc" id="L283">					double diff = cell1.projectedDist - cell2.projectedDist;</span>
+<span class="fc bfc" id="L284" title="All 2 branches covered.">					if (diff &gt; 0)</span>
+<span class="fc" id="L285">						return 1;</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">					else if (diff &lt; 0)</span>
+<span class="fc" id="L287">						return -1;</span>
+					else
+<span class="fc" id="L289">						return 0;</span>
+				}
+			});
+
+<span class="fc" id="L293">			Cell current = openCells.remove(0); // pop cell least projectedDist</span>
+<span class="fc bfc" id="L294" title="All 2 branches covered.">			if (current == endCell)</span>
+<span class="fc" id="L295">				break; // at end</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">			for (Cell neighbor : current.neighbors) {</span>
+<span class="fc" id="L297">				double projDist = getProjectedDistance(neighbor, current.travelled + 1, endCell);</span>
+<span class="fc bfc" id="L298" title="All 2 branches covered.">				if (!neighbor.visited || // not visited yet</span>
+<span class="pc bpc" id="L299" title="1 of 2 branches missed.">						projDist &lt; neighbor.projectedDist) { // better path</span>
+<span class="fc" id="L300">					neighbor.parent = current;</span>
+<span class="fc" id="L301">					neighbor.visited = true;</span>
+<span class="fc" id="L302">					neighbor.projectedDist = projDist;</span>
+<span class="fc" id="L303">					neighbor.travelled = current.travelled + 1;</span>
+<span class="pc bpc" id="L304" title="1 of 2 branches missed.">					if (!openCells.contains(neighbor))</span>
+<span class="fc" id="L305">						openCells.add(neighbor);</span>
+				}
+			}
+		}
+
+		// create path from end to beginning
+<span class="fc" id="L311">		Cell backtracking = endCell;</span>
+<span class="fc" id="L312">		backtracking.inPath = true;</span>
+<span class="fc bfc" id="L313" title="All 2 branches covered.">		while (backtracking.parent != null) {</span>
+<span class="fc" id="L314">			backtracking = backtracking.parent;</span>
+<span class="fc" id="L315">			backtracking.inPath = true;</span>
+		}
+<span class="fc" id="L317">	}</span>
+	
+	/** get the projected distance (A star algorithm consistent) */
+	public double getProjectedDistance(Cell current, double travelled, Cell end) {
+<span class="fc" id="L321">		return travelled + Math.abs(current.x - end.x) + Math.abs(current.y - current.x);</span>
+	}
+
+	/** draw the board */
+	public void updateGrid() {
+<span class="fc" id="L326">		char backChar = ' ', wallChar = '#', cellChar = ' ', pathChar = '*';</span>
+		// fill background
+<span class="fc bfc" id="L328" title="All 2 branches covered.">		for (int x = 0; x &lt; gridDimensionX; x++) {</span>
+<span class="fc bfc" id="L329" title="All 2 branches covered.">			for (int y = 0; y &lt; gridDimensionY; y++) {</span>
+<span class="fc" id="L330">				grid[x][y] = backChar;</span>
+			}
+		}
+
+		// build walls
+<span class="fc bfc" id="L335" title="All 2 branches covered.">		for (int x = 0; x &lt; gridDimensionX; x++) {</span>
+<span class="fc bfc" id="L336" title="All 2 branches covered.">			for (int y = 0; y &lt; gridDimensionY; y++) {</span>
+<span class="fc bfc" id="L337" title="All 4 branches covered.">				if (x % 4 == 0 || y % 2 == 0)</span>
+<span class="fc" id="L338">					grid[x][y] = wallChar;</span>
+			}
+		}
+
+		// make meaningful representation
+<span class="fc bfc" id="L343" title="All 2 branches covered.">		for (int x = 0; x &lt; dimensionX; x++) {</span>
+<span class="fc bfc" id="L344" title="All 2 branches covered.">			for (int y = 0; y &lt; dimensionY; y++) {</span>
+<span class="fc" id="L345">				Cell current = getCell(x, y);</span>
+<span class="fc" id="L346">				int gridX = x * 4 + 2, gridY = y * 2 + 1;</span>
+<span class="fc bfc" id="L347" title="All 2 branches covered.">				if (current.inPath) {</span>
+<span class="fc" id="L348">					grid[gridX][gridY] = pathChar;</span>
+<span class="fc bfc" id="L349" title="All 2 branches covered.">					if (current.isCellBelowNeighbor())</span>
+<span class="fc bfc" id="L350" title="All 2 branches covered.">						if (getCell(x, y + 1).inPath) {</span>
+<span class="fc" id="L351">							grid[gridX][gridY + 1] = pathChar;</span>
+<span class="fc" id="L352">							grid[gridX + 1][gridY + 1] = backChar;</span>
+<span class="fc" id="L353">							grid[gridX - 1][gridY + 1] = backChar;</span>
+<span class="fc" id="L354">						} else {</span>
+<span class="fc" id="L355">							grid[gridX][gridY + 1] = cellChar;</span>
+<span class="fc" id="L356">							grid[gridX + 1][gridY + 1] = backChar;</span>
+<span class="fc" id="L357">							grid[gridX - 1][gridY + 1] = backChar;</span>
+						}
+<span class="fc bfc" id="L359" title="All 2 branches covered.">					if (current.isCellRightNeighbor())</span>
+<span class="pc bpc" id="L360" title="1 of 2 branches missed.">						if (getCell(x + 1, y).inPath) {</span>
+<span class="fc" id="L361">							grid[gridX + 2][gridY] = pathChar;</span>
+<span class="fc" id="L362">							grid[gridX + 1][gridY] = pathChar;</span>
+<span class="fc" id="L363">							grid[gridX + 3][gridY] = pathChar;</span>
+<span class="fc" id="L364">						} else {</span>
+<span class="nc" id="L365">							grid[gridX + 2][gridY] = cellChar;</span>
+<span class="nc" id="L366">							grid[gridX + 1][gridY] = cellChar;</span>
+<span class="nc" id="L367">							grid[gridX + 3][gridY] = cellChar;</span>
+						}
+<span class="nc" id="L369">				} else {</span>
+<span class="fc" id="L370">					grid[gridX][gridY] = cellChar;</span>
+<span class="fc bfc" id="L371" title="All 2 branches covered.">					if (current.isCellBelowNeighbor()) {</span>
+<span class="fc" id="L372">						grid[gridX][gridY + 1] = cellChar;</span>
+<span class="fc" id="L373">						grid[gridX + 1][gridY + 1] = backChar;</span>
+<span class="fc" id="L374">						grid[gridX - 1][gridY + 1] = backChar;</span>
+					}
+<span class="fc bfc" id="L376" title="All 2 branches covered.">					if (current.isCellRightNeighbor()) {</span>
+<span class="fc" id="L377">						grid[gridX + 2][gridY] = cellChar;</span>
+<span class="fc" id="L378">						grid[gridX + 1][gridY] = cellChar;</span>
+<span class="fc" id="L379">						grid[gridX + 3][gridY] = cellChar;</span>
+					}
+				}
+			}
+		}
+<span class="fc" id="L384">	}</span>
+
+	/** simply prints the board */
+	@Override
+	public void draw() {
+<span class="fc" id="L389">		System.out.print(this);</span>
+<span class="fc" id="L390">	}</span>
+	
+	/** forms a meaningful representation */
+	@Override
+	public String toString() {
+<span class="fc" id="L395">		updateGrid();</span>
+<span class="fc" id="L396">		String output = &quot;&quot;;</span>
+<span class="fc bfc" id="L397" title="All 2 branches covered.">		for (int y = 0; y &lt; gridDimensionY; y++) {</span>
+<span class="fc bfc" id="L398" title="All 2 branches covered.">			for (int x = 0; x &lt; gridDimensionX; x++) {</span>
+<span class="fc bfc" id="L399" title="All 4 branches covered.">				if (y == 1 &amp;&amp; x == 1) {</span>
+<span class="fc" id="L400">					grid[x][y] = '@';</span>
+<span class="fc bfc" id="L401" title="All 4 branches covered.">				} else if (y == gridDimensionY - 2 &amp;&amp; x == gridDimensionX - 2) {</span>
+<span class="fc" id="L402">					grid[x][y] = '$';</span>
+				}
+
+<span class="fc" id="L405">				output += grid[x][y];</span>
+			}
+<span class="fc" id="L407">			output += &quot;\n&quot;;</span>
+		}
+<span class="fc" id="L409">		return output;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span>kingdomWarrior (Nov 7, 2018 12:16:43 AM)</div></body></html>

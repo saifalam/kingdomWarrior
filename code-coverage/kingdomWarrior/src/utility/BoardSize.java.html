@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>BoardSize.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">kingdomWarrior (Nov 7, 2018 12:16:43 AM)</a> &gt; <a href="../../index.html" class="el_group">kingdomWarrior</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">utility</a> &gt; <span class="el_source">BoardSize.java</span></div><h1>BoardSize.java</h1><pre class="source lang-java linenums">package utility;
+
+/**
+ * Provide board size depending on game level
+ * 
+ * &lt;br&gt;
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
+ */
+<span class="nc" id="L11">public enum BoardSize {</span>
+<span class="nc" id="L12">	ONE(5),</span>
+<span class="nc" id="L13">	TOW(6),</span>
+<span class="nc" id="L14">	THREE(7),</span>
+<span class="nc" id="L15">	FOUR(8),</span>
+<span class="nc" id="L16">	FIVE(9),</span>
+<span class="nc" id="L17">	SIX(10),</span>
+<span class="nc" id="L18">	SEVEN(11);</span>
+	
+	private int size;
+
+<span class="nc" id="L22">	private BoardSize(int size) {</span>
+<span class="nc" id="L23">		this.size = size;</span>
+<span class="nc" id="L24">	}</span>
+
+	public static int getSizeByLevel(int level) {
+		int result;
+		
+<span class="nc bnc" id="L29" title="All 7 branches missed.">		switch (level) {</span>
+		case 2:
+<span class="nc" id="L31">			result = TOW.size;</span>
+<span class="nc" id="L32">			break;</span>
+		case 3:
+<span class="nc" id="L34">			result = THREE.size;</span>
+<span class="nc" id="L35">			break;</span>
+		case 4:
+<span class="nc" id="L37">			result = FOUR.size;</span>
+<span class="nc" id="L38">			break;</span>
+		case 5:
+<span class="nc" id="L40">			result = FIVE.size;</span>
+<span class="nc" id="L41">			break;</span>
+		case 6:
+<span class="nc" id="L43">			result = SIX.size;</span>
+<span class="nc" id="L44">			break;</span>
+		case 7:
+<span class="nc" id="L46">			result = SEVEN.size;</span>
+<span class="nc" id="L47">			break;	</span>
+		default:
+<span class="nc" id="L49">			result = ONE.size;</span>
+			break;
+		}
+<span class="nc" id="L52">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span>kingdomWarrior (Nov 7, 2018 12:16:43 AM)</div></body></html>

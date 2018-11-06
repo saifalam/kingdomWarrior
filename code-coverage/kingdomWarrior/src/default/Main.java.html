@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">kingdomWarrior (Nov 7, 2018 12:16:43 AM)</a> &gt; <a href="../../index.html" class="el_group">kingdomWarrior</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">
+
+import java.util.Scanner;
+
+import board.BoardFactory;
+import board.IBoard;
+import game.GameInitializer;
+import player.IPlayer;
+import player.PlayerFactory;
+import utility.BoardSize;
+import utility.ConsoleLogger;
+
+
+/**
+ *  used to provide basic information, initialize
+ *  necessary classes and start the game 
+ *  &lt;br&gt;
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
+ */
+<span class="nc" id="L22">public class Main {</span>
+	// Used to run the game
+	public static void main(String[] args) {
+<span class="nc" id="L25">		ConsoleLogger logger = ConsoleLogger.getConsoleLogger();</span>
+<span class="nc" id="L26">		logger.logln(&quot;&quot;);</span>
+		
+<span class="nc" id="L28">		logger.logln(GameInitializer.ANSI_CYAN + &quot;Welcome to the KINGDOM WARRIOR&quot; + GameInitializer.ANSI_RESET);</span>
+<span class="nc" id="L29">		logger.logln(GameInitializer.ANSI_RED+&quot;--------------------------------------&quot;);</span>
+<span class="nc" id="L30">		logger.logln(&quot;--------------------------------------&quot;);</span>
+<span class="nc" id="L31">		logger.logln(&quot;Rules of this game:&quot;);</span>
+<span class="nc" id="L32">		logger.logln(&quot;    =&gt;To rule the seven kingdoms as a warrior, &quot;</span>
+				+ &quot;you need to conquer seven different levels/kingdoms one by one. &quot;);
+		
+<span class="nc" id="L35">		logger.logln(&quot;    =&gt;To travese the board/area you must need to move &quot;</span>
+				+ &quot;north (up), south(down), east(right) and west (left).&quot;);
+		
+<span class="nc" id="L38">		logger.logln(&quot;    =&gt;To move north, south, east and west you can use 4 keys from your keyboard &quot;);</span>
+		
+<span class="nc" id="L40">		logger.logln(&quot;    # West (left) = H &quot;);</span>
+<span class="nc" id="L41">		logger.logln(&quot;    # East(right) = L &quot;);</span>
+<span class="nc" id="L42">		logger.logln(&quot;    # South(down) = K &quot;);</span>
+<span class="nc" id="L43">		logger.logln(&quot;    # North (up) = J &quot;);</span>
+<span class="nc" id="L44">		logger.logln(&quot;    (If you are a vim user then you know what I mean ;) .... )&quot;);</span>
+		
+<span class="nc" id="L46">		logger.logln(&quot;&quot;);</span>
+<span class="nc" id="L47">		logger.logln(&quot;    # As a warrior you will be represented by \&quot;@\&quot; sign within a kingdom&quot;);</span>
+		
+<span class="nc" id="L49">		logger.logln(&quot;    # To conquer a kingdom you need to reach the \&quot;$\&quot; sign, &quot;</span>
+				+ &quot;representing the flag of the kingdom&quot;);
+		
+<span class="nc" id="L52">		logger.logln(&quot;    # Each \&quot;#\&quot; sign within a kingdom is representing an obstrucle or wall, &quot;</span>
+				+ &quot;which a warrior needs to be avoided&quot;);
+		
+<span class="nc" id="L55">		logger.logln(&quot;&quot;);</span>
+
+<span class="nc" id="L57">		logger.logln(&quot; So, don't wait, go and take the challenge to collect all flags to rule seven kingdoms.&quot;);</span>
+		
+		
+<span class="nc" id="L60">		logger.logln(&quot;--------------------------------------&quot;);</span>
+<span class="nc" id="L61">		logger.logln(&quot;--------------------------------------&quot; + GameInitializer.ANSI_RESET);</span>
+		
+
+		// Extensible part of the code
+		// Here IBoard, IPalyer, ILogger gives the extensibility of the code
+<span class="nc" id="L66">		IBoard kingdom = BoardFactory.getBoardFactory().getBoard(BoardSize.getSizeByLevel(1));</span>
+		
+<span class="nc" id="L68">		logger.log(&quot;Please enter the name of the warrior: &quot;);</span>
+		
+<span class="nc" id="L70">		Scanner scanner = new Scanner(System.in);</span>
+<span class="nc" id="L71">		String name = scanner.nextLine();</span>
+		
+<span class="nc" id="L73">		IPlayer warrior = PlayerFactory.getPlayerFactory().getPlayer(name, 0);</span>
+		
+		// Here 1 and 7 denotes the start and end level of the game
+		// Still the GameInitializer class contains some game dependent logics,
+		// which can easily be separated into a new class with the advantage of 
+		// extensibility (This is the plan, but the time is short)  
+<span class="nc" id="L79">		GameInitializer gameInitializer = new GameInitializer(kingdom, warrior, 1, 7);</span>
+<span class="nc" id="L80">		gameInitializer.play();</span>
+<span class="nc" id="L81">		scanner.close();</span>
+<span class="nc" id="L82">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span>kingdomWarrior (Nov 7, 2018 12:16:43 AM)</div></body></html>
