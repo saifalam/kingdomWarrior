@@ -1,17 +1,16 @@
 package player;
 
-import board.IBoard;
-import game.AbstractGameFactory;
-
-public class PlayerFactory extends AbstractGameFactory {
-
-	@Override
-	public IBoard getBoard(int size) {
-		//Implementation available for board initialization
-		return null;
+public class PlayerFactory {
+	
+	private static PlayerFactory playerFactory = null;
+	private PlayerFactory() {}
+	
+	public static PlayerFactory getPlayerFactory() {
+		if(playerFactory == null) {
+			playerFactory = new PlayerFactory();
+		}
+		return playerFactory;
 	}
-
-	@Override
 	public IPlayer getPlayer(String name, int points) {		
 		return new Player(name, points);
 	}

@@ -2,11 +2,15 @@ package game;
 
 import java.util.Scanner;
 
+import board.BoardFactory;
 import board.IBoard;
 import player.IPlayer;
 import utility.BoardSize;
+import utility.ConsoleLogger;
 
 public class GameInitializer {
+	
+	ConsoleLogger logger = ConsoleLogger.getConsoleLogger();
 
 	// Used to print different colors of letters on command line
 	public static final String ANSI_RESET = "\u001B[0m";
@@ -15,30 +19,40 @@ public class GameInitializer {
 	public static final String ANSI_YELLOW = "\u001B[33m";
 	public static final String ANSI_BLUE = "\u001B[34m";
 
+	// kingdom reference of Interface IBoard type 
 	private IBoard kingdom;
+	
+	// warrior reference of Interface IPlayer type
 	private IPlayer warrior;
 
+	// used to take single move from a warrior, when traversing a kingdom
 	private Scanner input = new Scanner(System.in);
+	
+	// used to take further decision from a warrior
 	private Scanner decesion = new Scanner(System.in);
+	
+	// indicates the level of the running game 
 	private int level = 0;
+	
+	// true only when a warrior conquer a kingdom
 	private boolean isWin = false;
+	
+	public GameInitializer() {}
 
-	/** 
-	 * used to initialize the necessary objects of this game 
-	 */
+	public GameInitializer(IBoard kingdom, IPlayer warrior, int level) {
+		this.kingdom = kingdom;
+		this.warrior = warrior;
+		this.level = level;
+	}
+
+	/** used to initialize the necessary objects of this game */
 	public void initGame() {
-		if(warrior == null) {
-			initPlayer();
-		}
-		
 		level++;
 		initKingdom();
 		play();
 	}
 	
-	/** 
-	 * used to initialize the game board or map of a kingdom 
-	 */
+	/** used to initialize the game board or map of a kingdom */
 	private void initKingdom() {
 		
 		if(kingdom != null) {
@@ -46,177 +60,195 @@ public class GameInitializer {
 			isWin = false;
 		}
 		
-		initBoard();
+		updateBoard();
 	}
 	
-	public void initPlayer() {
-		AbstractGameFactory playerFactory = GameObjectInitializer.getFactoryObject("player");
-		System.out.print("Please enter the name of the warrior: ");
-		warrior = playerFactory.getPlayer(input.nextLine(), 0);
-	}
 
-	public void initBoard() {
-		AbstractGameFactory boardFactory = GameObjectInitializer.getFactoryObject("board");
-		kingdom = boardFactory.getBoard(BoardSize.getSizeByLevel(level));
+	/** Initialize a kingdom from BoardFactory */
+	public void updateBoard() {
+		kingdom = BoardFactory.getBoardFactory().getBoard(BoardSize.getSizeByLevel(level));
 	}
 	
 	/** used to start the game */
 	public void play() {
-		System.out.println(warrior.getName() + ", you have " + warrior.getPoints() + " points");
-		System.out.println("Start kingdom: " + level);
-		//kingdom.solve();
+		logger.log(warrior.getName() + ", you have " + warrior.getPoints() + " points");
+		logger.log("Start kingdom: " + level);
+		
 		kingdom.draw();
 		char[][] grid = kingdom.getGrid();
 		
 		int x = 1;
 		int y = 1;
-		String move;
 
-		System.out.println("Enter a valid move (H(left),J(down),K(up),L(right))");
-		while (!(move = input.nextLine()).equalsIgnoreCase("quit")) {
-			
-			if (move.equalsIgnoreCase("h")) {
-				//System.out.println("left");
+		logger.log("Enter a valid move (H(left),J(down),K(up),L(right))");
+		input = new Scanner(System.in);
+		String move = input.nextLine();
+		
+		try {
+			while (!move.equalsIgnoreCase("quit")) {
+				
+				if (move.equalsIgnoreCase("h")) {
+					//logger.log("left");
 
-				if (grid[y - 1][x] == '#') {
-					System.out.println("wall");
-					System.out.println(grid[y - 1][x]);
+					if (grid[y - 1][x] == '#') {
+						logger.log("wall");
+						logger.log(grid[y - 1][x]+"");
+					} 
+					else if (grid[y - 1][x] == ' ' || grid[y - 1][x] == '@' 
+							|| grid[y - 1][x] == '$' || grid[y - 1][x] == '*') {
+						//logger.log("blank");
+						logger.log(grid[y - 1][x]+"");
+						y--;
+					}
+
+					updateSingleMove(x, y, grid);
+
 				} 
-				else if (grid[y - 1][x] == ' ' || grid[y - 1][x] == '@' || grid[y - 1][x] == '$') {
-					//System.out.println("blank");
-					System.out.println(grid[y - 1][x]);
-					y--;
-				}
+				else if (move.equalsIgnoreCase("j")) {
+					//logger.log("down");
 
-				updateSingleMove(x, y, grid);
+					if (grid[y][x + 1] == '#') {
+						logger.log("wall");
+						//logger.log(grid[y][x + 1]);
+					} 
+					else if (grid[y][x + 1] == ' ' || grid[y][x + 1] == '@' 
+							|| grid[y][x + 1] == '$' || grid[y][x + 1] == '*') {
+						//logger.log("Blank");
+						//logger.log(grid[y][x + 1]);
+						x++;
+					}
 
-			} 
-			else if (move.equalsIgnoreCase("j")) {
-				//System.out.println("down");
-
-				if (grid[y][x + 1] == '#') {
-					System.out.println("wall");
-					//System.out.println(grid[y][x + 1]);
+					updateSingleMove(x, y, grid);
 				} 
-				else if (grid[y][x + 1] == ' ' || grid[y][x + 1] == '@' || grid[y][x + 1] == '$') {
-					//System.out.println("Blank");
-					//System.out.println(grid[y][x + 1]);
-					x++;
-				}
+				else if (move.equalsIgnoreCase("k")) {
 
-				updateSingleMove(x, y, grid);
-			} 
-			else if (move.equalsIgnoreCase("k")) {
+					//logger.log("up");
+					if (grid[y][x - 1] == '#') {
+						logger.log("wall");
+					} 
+					else if (grid[y][x - 1] == ' ' || grid[y][x - 1] == '@' 
+							|| grid[y][x - 1] == '$' || grid[y][x - 1] == '*') {
+						//logger.log("Blank");
+						x--;
+					}
 
-				//System.out.println("up");
-				if (grid[y][x - 1] == '#') {
-					System.out.println("wall");
+					updateSingleMove(x, y, grid);
 				} 
-				else if (grid[y][x - 1] == ' ' || grid[y][x - 1] == '@' || grid[y][x - 1] == '$') {
-					//System.out.println("Blank");
-					x--;
-				}
+				else if (move.equalsIgnoreCase("l")) {
 
-				updateSingleMove(x, y, grid);
-			} 
-			else if (move.equalsIgnoreCase("l")) {
+					if (grid[y + 1][x] == '#') {
+						logger.log("wall");
+					} 
+					else if (grid[y + 1][x] == ' ' || grid[y + 1][x] == '@' 
+							|| grid[y + 1][x] == '$' || grid[y + 1][x] == '*') {
+						//logger.log("Blank");
+						//logger.log("value of positions: " + (y + 1) + " " + x);
+						y++;
+					}
 
-				if (grid[y + 1][x] == '#') {
-					System.out.println("wall");
+					updateSingleMove(x, y, grid);
 				} 
-				else if (grid[y + 1][x] == ' ' || grid[y + 1][x] == '@' || grid[y + 1][x] == '$') {
-					//System.out.println("Blank");
-					//System.out.println("value of po sitions: " + (y + 1) + " " + x);
-					y++;
+				else {
+					logger.log("Invalid move: "+ move);
+					logger.log("Enter a valid move (H(left),J(down),K(up),L(right))");
 				}
-
-				updateSingleMove(x, y, grid);
-			} 
-			else {
-				System.out.println("Invalid move: "+ move);
-				System.out.println("Enter a valid move (H(left),J(down),K(up),L(right))");
+				move = input.nextLine();
 			}
 			
-		}
-		
-		System.out.println("Mission is given up by the warrior "+ move);
-		input.close();
+			logger.log("Mission is given up by the warrior "+ move);
+			
+			decesion.close();
+			input.close();
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}	
 	}
 
 	/**
 	 * used to update single move of a warrior
 	 * and check necessary conditions to continue the game
 	 */
-	public void updateSingleMove(int x, int y, char[][] grid) {
+	private void updateSingleMove(int x, int y, char[][] grid) {
 
 		for (int i = 0; i < kingdom.getGridDimensionY(); i++) {
 			for (int j = 0; j < kingdom.getGridDimensionX(); j++) {
 
 				if (i == kingdom.getGridDimensionY() - 2 && j == kingdom.getGridDimensionX() - 2) {
 					grid[j][i] = '$';
-					System.out.print(ANSI_YELLOW + grid[j][i] + ANSI_RESET);
+					logger.print(ANSI_YELLOW + grid[j][i] + ANSI_RESET);
 				} 
 				else if (i == x && j == y) {
 					grid[j][i] = '@';
-					System.out.print(ANSI_YELLOW + grid[j][i] + ANSI_RESET);	
+					logger.print(ANSI_YELLOW + grid[j][i] + ANSI_RESET);	
 				} 
 				else {
-					System.out.print(grid[j][i]);
+					logger.print(grid[j][i]+"");
 				}
 				
 				if (x == kingdom.getGridDimensionY() - 2 && y == kingdom.getGridDimensionX() - 2) {
 					grid[j][i] = '$';
-					System.out.print(ANSI_RED + grid[j][i] + ANSI_RESET);
+					logger.print(ANSI_RED + grid[j][i] + ANSI_RESET);
 					isWin = true;
 				} 
 			}
-			System.out.println();
-		}
-		System.out.println();
-		if(isWin){
-			System.out.println();
-			System.out.println("       ================================      ");
-			System.out.println();
-			if(level < 7) {
-				System.out.println("Congratulation warrior "+ warrior.getName() + 
-						" you win "+ level + (level== 1 ? " knigdom" :" knigdoms"));
+			logger.log("");
+		
+		if(isWin) 
+			progressMission();	
+	}
+}
+
+	/** this method is used when a warrior win/conquer a kingdom */
+	private void progressMission() {
+		
+		logger.log("");
+		logger.log("       ================================      ");
+		logger.log("");
+		
+		if(level < 7) {
+			
+			logger.log("Congratulation warrior "+ warrior.getName() + 
+					" you win "+ level + (level== 1 ? " knigdom" :" knigdoms"));
+			
+			warrior.setPoints(warrior.getPoints()+100);
+			logger.log(warrior.getName() + " you earn "+ warrior.getPoints()+ " points");
+			
+			logger.log("Do you want to win the next kingdom to rule the whole seven kingdom ?");
+			
+			logger.log("");
+			logger.log(ANSI_RED+"For next mission enter \"yes\" or to quit the game write \"quit\" "+ANSI_RESET);
+			
+			String decision = decesion.nextLine();
+			
+			while(!decision.equalsIgnoreCase("yes")) {
 				
-				warrior.setPoints(warrior.getPoints()+100);
-				System.out.println(warrior.getName() + " you earn "+ warrior.getPoints()+ " points");
+				logger.log(ANSI_RED+"For next mission enter \"yes\" or to quit the game write \"quit\" "+ANSI_RESET);
+				decision = input.nextLine();
 				
-				System.out.println("Do you want to win the next kingdom to rule the whole seven kingdom ?");
-				
-				System.out.println();
-				System.out.println(ANSI_RED+"For next mission enter \"yes\" or to quit the game write \"quit\" "+ANSI_RESET);
-				
-				String decision = decesion.nextLine();
-				
-				while(!decision.equalsIgnoreCase("yes")) {
-					System.out.println(ANSI_RED+"For next mission enter \"yes\" or to quit the game write \"quit\" "+ANSI_RESET);
-					decision = input.nextLine();
-					
-					if(decision.equalsIgnoreCase("yes")) {
-						break;
-					}
-					else if(decision.equalsIgnoreCase("quit")) {
-						input.close();
-						System.exit(0);
-					}
+				if(decision.equalsIgnoreCase("yes")) {
+					break;
 				}
-				
-				System.out.println("       ================================      ");
-				initGame();
-				decesion.close();	
+				else if(decision.equalsIgnoreCase("quit")) {
+					input.close();
+					System.exit(0);
+				}
 			}
-			else {
-				System.out.println("Congratulation warrior "+ warrior.getName() + 
-						" you win all "+ level +" knigdoms");
-				
-				System.out.println(ANSI_YELLOW+"Now you are the ruler of Seven kingdom, the throne is yours..."+ ANSI_RESET);
-				input.close();
-				decesion.close();
-				System.exit(0);
-			}	
+			
+			logger.log("       ================================      ");
+			initGame();
+			decesion.close();	
+		}
+		else {
+			
+			logger.log("Congratulation warrior "+ warrior.getName() + 
+					" you win all "+ level +" kingdoms");
+			
+			logger.log(ANSI_YELLOW+"Now you are the ruler of Seven kingdom, the throne is yours..."+ ANSI_RESET);
+			input.close();
+			decesion.close();
+			System.exit(0);
 		}
 	}
 }
+

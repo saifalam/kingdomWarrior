@@ -8,6 +8,7 @@ import utility.BoardSize;
 
 /**
  * This class is used to control the whole game
+ * presently unused
  */
 public class Game {
 
