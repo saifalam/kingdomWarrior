@@ -1,5 +1,11 @@
 package player;
 
+/**
+ * singleton class, used to generate game player,
+ * with given name and points (initially 0).
+ * 
+ *  Part of factory object pattern for player
+ */
 public class PlayerFactory {
 	
 	private static PlayerFactory playerFactory = null;

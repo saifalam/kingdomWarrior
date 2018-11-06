@@ -18,6 +18,7 @@ public class GameInitializer {
 	public static final String ANSI_GREEN = "\u001B[32m";
 	public static final String ANSI_YELLOW = "\u001B[33m";
 	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_CYAN = "\u001B[36m";
 
 	// kingdom reference of Interface IBoard type 
 	private IBoard kingdom;
@@ -112,7 +113,6 @@ public class GameInitializer {
 					}
 
 					updateSingleMove(x, y, grid);
-
 				} 
 				else if (move.equalsIgnoreCase("j")) {
 

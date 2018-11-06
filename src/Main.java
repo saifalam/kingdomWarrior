@@ -15,7 +15,7 @@ public class Main {
 		ConsoleLogger logger = ConsoleLogger.getConsoleLogger();
 		logger.logln("");
 		
-		logger.logln(GameInitializer.ANSI_YELLOW + "Welcome to the KINGDOM WARRIOR" + GameInitializer.ANSI_RESET);
+		logger.logln(GameInitializer.ANSI_CYAN + "Welcome to the KINGDOM WARRIOR" + GameInitializer.ANSI_RESET);
 		logger.logln(GameInitializer.ANSI_RED+"--------------------------------------");
 		logger.logln("--------------------------------------");
 		logger.logln("Rules of this game:");
@@ -34,10 +34,13 @@ public class Main {
 		logger.logln("    (If you are a vim user then you know what I mean ;) .... )");
 		
 		logger.logln("");
-		logger.logln("    # As a warrior you will be represented by @ sign within a kingdom");
+		logger.logln("    # As a warrior you will be represented by \"@\" sign within a kingdom");
 		
-		logger.logln("    # To conquer a kingdom you need to reach the $ sign, "
+		logger.logln("    # To conquer a kingdom you need to reach the \"$\" sign, "
 				+ "representing the flag of the kingdom");
+		
+		logger.logln("    # Each \"#\" sign within a kingdom is representing an obstrucle or wall, "
+				+ "which a warrior needs to be avoided");
 		
 		logger.logln("");
 
@@ -61,7 +64,7 @@ public class Main {
 		
 		// Here 1 and 7 denotes the start and end level of the game
 		// Still the GameInitializer class contains some game dependent logics,
-		// which can easily be separated into a new class with the option of 
+		// which can easily be separated into a new class with the advantage of 
 		// extensibility (This is the plan, but the time is short)  
 		GameInitializer gameInitializer = new GameInitializer(kingdom, warrior, 1, 7);
 		gameInitializer.play();

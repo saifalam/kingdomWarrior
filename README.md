@@ -27,7 +27,8 @@ Rules of this game:
 	1. To rule the seven kingdoms as a warrior, you need to conquer seven different levels/ kingdoms one by one.  
 	2. As a warrior you will be represented by **@** sign within a kingdom  
 	3. To conquer a kingdom you need to reach the **$** sign, representing the flag of the kingdom  
-	4. To travese the board /area you must need to move __north (up), south(down), east(right) and west (left)__.  
+	4. Each **#** sign within a kingdom is representing an obstrucle or wall, which a warrior needs to be avoided  
+	5. To travese the board /area you must need to move __north (up), south(down), east(right) and west (left)__.  
 	5. To move north, south, east and west you can use 4 keys from your keyboard:  
 		*__West (left) = H__    
 		*__East(right) = L__  
