@@ -15,7 +15,7 @@ P.B.: __Java needs to be installed or configured to the local machine__
 Clone this repository or download the .zip version. Extarct it into your local machine.
 
 **option one:**  
-Go to ...your_directory/kingdomWarrior/. Open the command line and write the command: `java -jar kingdomWarrior.jar`  
+Go to ...your_directory/kingdomWarrior/ . Open the command line and write the command: `java -jar kingdomWarrior.jar`  
 
 **option two:**  
 Go to ...your_directory/kingdomWarrior/bin. Open the command line and write the command: `java Main`  

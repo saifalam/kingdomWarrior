@@ -32,22 +32,26 @@ public class GameInitializer {
 	private Scanner decesion = new Scanner(System.in);
 	
 	// indicates the level of the running game 
-	private int level = 0;
+	private int currentLevel = 0;
+	
+	// indicates the level of the running game 
+	private int finalLevel = 0;
 	
 	// true only when a warrior conquer a kingdom
 	private boolean isWin = false;
 	
 	public GameInitializer() {}
 
-	public GameInitializer(IBoard kingdom, IPlayer warrior, int level) {
+	public GameInitializer(IBoard kingdom, IPlayer warrior, int currentLevel, int finalLevel) {
 		this.kingdom = kingdom;
 		this.warrior = warrior;
-		this.level = level;
+		this.currentLevel = currentLevel;
+		this.finalLevel = finalLevel;
 	}
 
 	/** used to initialize the necessary objects of this game */
 	public void initGame() {
-		level++;
+		currentLevel++;
 		initKingdom();
 		play();
 	}
@@ -66,13 +70,19 @@ public class GameInitializer {
 
 	/** Initialize a kingdom from BoardFactory */
 	public void updateBoard() {
-		kingdom = BoardFactory.getBoardFactory().getBoard(BoardSize.getSizeByLevel(level));
+		kingdom = BoardFactory.getBoardFactory().getBoard(BoardSize.getSizeByLevel(currentLevel));
 	}
 	
-	/** used to start the game */
+	/** 
+	 * used to start the game 
+	 * 
+	 * This method contains game dependent logics, which should be 
+	 * removed with to other class with extensibility (future plan) 
+	 * 
+	 */
 	public void play() {
-		logger.log(warrior.getName() + ", you have " + warrior.getPoints() + " points");
-		logger.log("Start kingdom: " + level);
+		logger.logln(warrior.getName() + ", you have " + warrior.getPoints() + " points");
+		logger.logln("Start kingdom: " + currentLevel);
 		
 		kingdom.draw();
 		char[][] grid = kingdom.getGrid();
@@ -80,24 +90,24 @@ public class GameInitializer {
 		int x = 1;
 		int y = 1;
 
-		logger.log("Enter a valid move (H(left),J(down),K(up),L(right))");
-		input = new Scanner(System.in);
-		String move = input.nextLine();
+		logger.logln("Enter a valid move (H(left),J(down),K(up),L(right))");
+		
+		String move = null;
 		
 		try {
-			while (!move.equalsIgnoreCase("quit")) {
+			while (!(move= input.nextLine()).equalsIgnoreCase("quit")) {
 				
 				if (move.equalsIgnoreCase("h")) {
 					//logger.log("left");
 
 					if (grid[y - 1][x] == '#') {
-						logger.log("wall");
-						logger.log(grid[y - 1][x]+"");
+						logger.logln("wall");
+						logger.logln(grid[y - 1][x]+"");
 					} 
 					else if (grid[y - 1][x] == ' ' || grid[y - 1][x] == '@' 
 							|| grid[y - 1][x] == '$' || grid[y - 1][x] == '*') {
 						//logger.log("blank");
-						logger.log(grid[y - 1][x]+"");
+						logger.logln(grid[y - 1][x]+"");
 						y--;
 					}
 
@@ -105,30 +115,24 @@ public class GameInitializer {
 
 				} 
 				else if (move.equalsIgnoreCase("j")) {
-					//logger.log("down");
 
 					if (grid[y][x + 1] == '#') {
-						logger.log("wall");
-						//logger.log(grid[y][x + 1]);
+						logger.logln("wall");
 					} 
 					else if (grid[y][x + 1] == ' ' || grid[y][x + 1] == '@' 
 							|| grid[y][x + 1] == '$' || grid[y][x + 1] == '*') {
-						//logger.log("Blank");
-						//logger.log(grid[y][x + 1]);
 						x++;
 					}
 
 					updateSingleMove(x, y, grid);
 				} 
 				else if (move.equalsIgnoreCase("k")) {
-
-					//logger.log("up");
+					
 					if (grid[y][x - 1] == '#') {
-						logger.log("wall");
+						logger.logln("wall");
 					} 
 					else if (grid[y][x - 1] == ' ' || grid[y][x - 1] == '@' 
 							|| grid[y][x - 1] == '$' || grid[y][x - 1] == '*') {
-						//logger.log("Blank");
 						x--;
 					}
 
@@ -137,28 +141,26 @@ public class GameInitializer {
 				else if (move.equalsIgnoreCase("l")) {
 
 					if (grid[y + 1][x] == '#') {
-						logger.log("wall");
+						logger.logln("wall");
 					} 
 					else if (grid[y + 1][x] == ' ' || grid[y + 1][x] == '@' 
 							|| grid[y + 1][x] == '$' || grid[y + 1][x] == '*') {
-						//logger.log("Blank");
-						//logger.log("value of positions: " + (y + 1) + " " + x);
 						y++;
 					}
 
 					updateSingleMove(x, y, grid);
 				} 
 				else {
-					logger.log("Invalid move: "+ move);
-					logger.log("Enter a valid move (H(left),J(down),K(up),L(right))");
+					logger.logln("Invalid move: "+ move);
+					logger.logln("Enter a valid move (H(left),J(down),K(up),L(right))");
 				}
-				move = input.nextLine();
 			}
 			
-			logger.log("Mission is given up by the warrior "+ move);
+			logger.logln("Mission is given up by the warrior:  "+ move);
 			
 			decesion.close();
 			input.close();
+			System.exit(0);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
@@ -168,6 +170,9 @@ public class GameInitializer {
 	/**
 	 * used to update single move of a warrior
 	 * and check necessary conditions to continue the game
+	 * 
+	 * should be removed with to other class with extensibility (future plan)
+	 * 
 	 */
 	private void updateSingleMove(int x, int y, char[][] grid) {
 
@@ -176,23 +181,23 @@ public class GameInitializer {
 
 				if (i == kingdom.getGridDimensionY() - 2 && j == kingdom.getGridDimensionX() - 2) {
 					grid[j][i] = '$';
-					logger.print(ANSI_YELLOW + grid[j][i] + ANSI_RESET);
+					logger.log(ANSI_YELLOW + grid[j][i] + ANSI_RESET);
 				} 
 				else if (i == x && j == y) {
 					grid[j][i] = '@';
-					logger.print(ANSI_YELLOW + grid[j][i] + ANSI_RESET);	
+					logger.log(ANSI_YELLOW + grid[j][i] + ANSI_RESET);	
 				} 
 				else {
-					logger.print(grid[j][i]+"");
+					logger.log(grid[j][i]+"");
 				}
 				
 				if (x == kingdom.getGridDimensionY() - 2 && y == kingdom.getGridDimensionX() - 2) {
 					grid[j][i] = '$';
-					logger.print(ANSI_RED + grid[j][i] + ANSI_RESET);
+					logger.log(ANSI_RED + grid[j][i] + ANSI_RESET);
 					isWin = true;
 				} 
 			}
-			logger.log("");
+			logger.logln("");
 		
 		if(isWin) 
 			progressMission();	
@@ -202,28 +207,28 @@ public class GameInitializer {
 	/** this method is used when a warrior win/conquer a kingdom */
 	private void progressMission() {
 		
-		logger.log("");
-		logger.log("       ================================      ");
-		logger.log("");
+		logger.logln("");
+		logger.logln("       ================================      ");
+		logger.logln("");
 		
-		if(level < 7) {
+		if(currentLevel < finalLevel ) {
 			
-			logger.log("Congratulation warrior "+ warrior.getName() + 
-					" you win "+ level + (level== 1 ? " knigdom" :" knigdoms"));
+			logger.logln("Congratulation warrior "+ warrior.getName() + 
+					" you win "+ currentLevel + (currentLevel== 1 ? " knigdom" :" knigdoms"));
 			
 			warrior.setPoints(warrior.getPoints()+100);
-			logger.log(warrior.getName() + " you earn "+ warrior.getPoints()+ " points");
+			logger.logln(warrior.getName() + " you earn "+ warrior.getPoints()+ " points");
 			
-			logger.log("Do you want to win the next kingdom to rule the whole seven kingdom ?");
+			logger.logln("Do you want to win the next kingdom to rule the whole seven kingdom ?");
 			
-			logger.log("");
-			logger.log(ANSI_RED+"For next mission enter \"yes\" or to quit the game write \"quit\" "+ANSI_RESET);
+			logger.logln("");
+			logger.logln(ANSI_RED+"For next mission enter \"yes\" or to quit the game write \"quit\" "+ANSI_RESET);
 			
 			String decision = decesion.nextLine();
 			
 			while(!decision.equalsIgnoreCase("yes")) {
 				
-				logger.log(ANSI_RED+"For next mission enter \"yes\" or to quit the game write \"quit\" "+ANSI_RESET);
+				logger.logln(ANSI_RED+"For next mission enter \"yes\" or to quit the game write \"quit\" "+ANSI_RESET);
 				decision = input.nextLine();
 				
 				if(decision.equalsIgnoreCase("yes")) {
@@ -235,16 +240,16 @@ public class GameInitializer {
 				}
 			}
 			
-			logger.log("       ================================      ");
+			logger.logln("       ================================      ");
 			initGame();
 			decesion.close();	
 		}
 		else {
 			
-			logger.log("Congratulation warrior "+ warrior.getName() + 
-					" you win all "+ level +" kingdoms");
+			logger.logln("Congratulation warrior "+ warrior.getName() + 
+					" you win all "+ currentLevel +" kingdoms");
 			
-			logger.log(ANSI_YELLOW+"Now you are the ruler of Seven kingdom, the throne is yours..."+ ANSI_RESET);
+			logger.logln(ANSI_YELLOW+"Now you are the ruler of Seven kingdom, the throne is yours..."+ ANSI_RESET);
 			input.close();
 			decesion.close();
 			System.exit(0);

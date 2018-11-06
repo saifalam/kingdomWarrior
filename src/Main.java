@@ -13,49 +13,58 @@ public class Main {
 	// Used to run the game
 	public static void main(String[] args) {
 		ConsoleLogger logger = ConsoleLogger.getConsoleLogger();
-		logger.log("");
+		logger.logln("");
 		
-		logger.log(GameInitializer.ANSI_YELLOW + "Welcome to the KINGDOM WARRIOR" + GameInitializer.ANSI_RESET);
-		logger.log(GameInitializer.ANSI_RED+"--------------------------------------");
-		logger.log("--------------------------------------");
-		logger.log("Rules of this game:");
-		logger.log("    =>To rule the seven kingdoms as a warrior, "
+		logger.logln(GameInitializer.ANSI_YELLOW + "Welcome to the KINGDOM WARRIOR" + GameInitializer.ANSI_RESET);
+		logger.logln(GameInitializer.ANSI_RED+"--------------------------------------");
+		logger.logln("--------------------------------------");
+		logger.logln("Rules of this game:");
+		logger.logln("    =>To rule the seven kingdoms as a warrior, "
 				+ "you need to conquer seven different levels/kingdoms one by one. ");
 		
-		logger.log("    =>To travese the board/area you must need to move "
+		logger.logln("    =>To travese the board/area you must need to move "
 				+ "north (up), south(down), east(right) and west (left).");
 		
-		logger.log("    =>To move north, south, east and west you can use 4 keys from your keyboard ");
+		logger.logln("    =>To move north, south, east and west you can use 4 keys from your keyboard ");
 		
-		logger.log("    # West (left) = H ");
-		logger.log("    # East(right) = L ");
-		logger.log("    # South(down) = K ");
-		logger.log("    # North (up) = J ");
-		logger.log("    (If you are a vim user then you know what I mean ;) .... )");
+		logger.logln("    # West (left) = H ");
+		logger.logln("    # East(right) = L ");
+		logger.logln("    # South(down) = K ");
+		logger.logln("    # North (up) = J ");
+		logger.logln("    (If you are a vim user then you know what I mean ;) .... )");
 		
-		logger.log("");
-		logger.log("    # As a warrior you will be represented by @ sign within a kingdom");
+		logger.logln("");
+		logger.logln("    # As a warrior you will be represented by @ sign within a kingdom");
 		
-		logger.log("    # To conquer a kingdom you need to reach the $ sign, "
+		logger.logln("    # To conquer a kingdom you need to reach the $ sign, "
 				+ "representing the flag of the kingdom");
 		
-		logger.log("");
+		logger.logln("");
 
-		logger.log(" So, don't wait, go and take the challenge to collect all flags to rule seven kingdoms.");
+		logger.logln(" So, don't wait, go and take the challenge to collect all flags to rule seven kingdoms.");
 		
 		
-		logger.log("--------------------------------------");
-		logger.log("--------------------------------------" + GameInitializer.ANSI_RESET);
+		logger.logln("--------------------------------------");
+		logger.logln("--------------------------------------" + GameInitializer.ANSI_RESET);
 		
 
+		// Extensible part of the code
+		// Here IBoard, IPalyer, ILogger gives the extensibility of the code
 		IBoard kingdom = BoardFactory.getBoardFactory().getBoard(BoardSize.getSizeByLevel(1));
 		
-		Scanner scanner = new Scanner(System.in);
-		logger.print("Please enter the name of the warrior: ");
-		IPlayer warrior = PlayerFactory.getPlayerFactory().getPlayer(scanner.nextLine(), 0);
-		scanner.close();
+		logger.log("Please enter the name of the warrior: ");
 		
-		GameInitializer gameInitializer = new GameInitializer(kingdom, warrior, 1);
+		Scanner scanner = new Scanner(System.in);
+		String name = scanner.nextLine();
+		
+		IPlayer warrior = PlayerFactory.getPlayerFactory().getPlayer(name, 0);
+		
+		// Here 1 and 7 denotes the start and end level of the game
+		// Still the GameInitializer class contains some game dependent logics,
+		// which can easily be separated into a new class with the option of 
+		// extensibility (This is the plan, but the time is short)  
+		GameInitializer gameInitializer = new GameInitializer(kingdom, warrior, 1, 7);
 		gameInitializer.play();
+		scanner.close();
 	}
 }

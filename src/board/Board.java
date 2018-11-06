@@ -171,7 +171,7 @@ public class Board implements IBoard {
 		generateBoard(0, 0);
 	}
 
-	// generate the maze from coordinates x, y
+	// generate the board from coordinates x, y
 	private void generateBoard(int x, int y) {
 		// generate from Cell
 		generateBoard(getCell(x, y));
@@ -190,7 +190,7 @@ public class Board implements IBoard {
 			Cell cell;
 			// this is to reduce but not completely eliminate the number
 			// of long twisting halls with short easy to detect branches
-			// which results in easy mazes
+			// which results in easy boards
 			if (random.nextInt(10) == 0)
 				cell = cells.remove(random.nextInt(cells.size()));
 			else
@@ -240,7 +240,7 @@ public class Board implements IBoard {
 		this.solve(0, 0, dimensionX - 1, dimensionY - 1);
 	}
 
-	// solve the maze starting from the start state (A-star algorithm)
+	/** solve the board starting from the start state (A-star algorithm)*/
 	public void solve(int startX, int startY, int endX, int endY) {
 
 		// re initialize cells for path finding
