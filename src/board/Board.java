@@ -5,9 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
-/**
+/** 
  * This class is used for creating a dynamic board.
  * this board need only a dimension as input.  
+ * 
  */
 public class Board implements IBoard {
 	

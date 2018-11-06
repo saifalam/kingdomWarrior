@@ -2,6 +2,11 @@ package utility;
 
 /**
  * Provide board size depending on game level
+ * 
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
  */
 public enum BoardSize {
 	ONE(5),

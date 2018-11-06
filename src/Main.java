@@ -1,4 +1,5 @@
 
+
 import java.util.Scanner;
 
 import board.BoardFactory;
@@ -9,6 +10,15 @@ import player.PlayerFactory;
 import utility.BoardSize;
 import utility.ConsoleLogger;
 
+
+/**
+ *  used to provide basic information, initialize
+ *  necessary classes and start the game 
+ *  <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
+ */
 public class Main {
 	// Used to run the game
 	public static void main(String[] args) {

@@ -5,6 +5,11 @@ package player;
  * with given name and points (initially 0).
  * 
  *  Part of factory object pattern for player
+ *  
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
  */
 public class PlayerFactory {
 	

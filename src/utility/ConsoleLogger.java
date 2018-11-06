@@ -3,6 +3,11 @@ package utility;
 /**
  * This is a singleton class, used to
  * print information on console 
+ * 
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
  */
 public class ConsoleLogger implements ILogger {
 	

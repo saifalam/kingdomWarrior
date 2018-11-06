@@ -2,6 +2,11 @@ package player;
 
 /**
  * Used to provide a very simple player
+ * 
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
  */
 public class Player implements IPlayer{
 	

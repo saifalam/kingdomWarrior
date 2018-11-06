@@ -8,6 +8,17 @@ import player.IPlayer;
 import utility.BoardSize;
 import utility.ConsoleLogger;
 
+
+/**
+ * 
+ * Main logic to continue playing is available here.
+ * Need to decouple this class for better extensibility  
+ * 
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
+ */
 public class GameInitializer {
 	
 	ConsoleLogger logger = ConsoleLogger.getConsoleLogger();
@@ -91,7 +102,7 @@ public class GameInitializer {
 		int x = 1;
 		int y = 1;
 
-		logger.logln("Enter a valid move (H(left),J(down),K(up),L(right))");
+		logger.logln("Enter a valid move (H(left),J(down),K(up),L(right)) OR type \"quit\" to exit: ");
 		
 		String move = null;
 		
@@ -152,7 +163,7 @@ public class GameInitializer {
 				} 
 				else {
 					logger.logln("Invalid move: "+ move);
-					logger.logln("Enter a valid move (H(left),J(down),K(up),L(right))");
+					logger.logln("Enter a valid move (H(left),J(down),K(up),L(right)) OR type \"quit\" to exit: ");
 				}
 			}
 			

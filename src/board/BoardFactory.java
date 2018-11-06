@@ -5,6 +5,11 @@ package board;
  * with given size.
  * 
  *  Part of factory object pattern for Board
+ *  
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
  */
 public class BoardFactory {
 	

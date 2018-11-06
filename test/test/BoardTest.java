@@ -9,7 +9,16 @@ import java.util.Scanner;
 import org.junit.jupiter.api.Test;
 
 import board.Board;
+import board.BoardFactory;
 
+/**
+ * used to test {@link Board} 
+ * 
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
+ */
 class BoardTest {
 	
 	int getData(String data) {

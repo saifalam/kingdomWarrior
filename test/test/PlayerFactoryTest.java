@@ -8,6 +8,14 @@ import org.junit.jupiter.api.Test;
 import player.IPlayer;
 import player.PlayerFactory;
 
+/**
+ * used to test {@link PlayerFactory} 
+ * 
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
+ */
 class PlayerFactoryTest {
 
 	@Test

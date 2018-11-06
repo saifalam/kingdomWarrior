@@ -8,6 +8,14 @@ import board.Board;
 import board.BoardFactory;
 import board.IBoard;
 
+/**
+ * used to test {@link BoardFactory} 
+ * 
+ * <br>
+ * @author  Saif
+ * @version 1.0
+ * @since   2018-11-04
+ */
 class BoardFactoryTest {
 
 	@Test
